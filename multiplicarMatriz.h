@@ -1,0 +1,1 @@
+float multiplicarMatriz(int ordMatriz, int *matrizC, int *matrizD, int *matrizE);

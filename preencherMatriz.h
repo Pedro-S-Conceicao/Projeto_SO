@@ -1,0 +1,1 @@
+void preencherMatriz(int ordMatriz, int *matriz, char *arqDat);
