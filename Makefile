@@ -1,6 +1,6 @@
 # Makefile Projeto da disciplina de Sistemas operacionais 
 #
-DEP = Teste001.c preencherMatriz.c reduzirMatriz.c multiplicarMatriz.c escreverMatriz.c  somarMatriz.c 
+DEP = Main_projeto.c preencherMatriz.c reduzirMatriz.c multiplicarMatriz.c escreverMatriz.c  somarMatriz.c 
 
 
 Teste01:    projetoSO run01 clean
