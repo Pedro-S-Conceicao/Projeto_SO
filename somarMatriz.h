@@ -1,1 +1,0 @@
-float somarMatriz(int ordMatriz, int *matrizA, int *matrizB, int *matrizD);

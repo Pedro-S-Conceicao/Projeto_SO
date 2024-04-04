@@ -1,11 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "preencherMatriz.h"
-#include "somarMatriz.h"
-#include "escreverMatriz.h"
-#include "multiplicarMatriz.h"
-#include "reduzirMatriz.h"
+#include "tarefas.h"
 
 #define ordemMatriz (atoi(argv[2]))
 #define arquivoA (argv[3])

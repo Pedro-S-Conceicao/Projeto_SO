@@ -1,1 +1,0 @@
-float reduzirMatriz(int ordMatriz, int *matrizE);
