@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     {
         for (*coluna = 0; *coluna < (atoi(argv[1])); ++*coluna)
         {
-            fprintf(arquivo, "1 ");
+            fprintf(arquivo, "2 ");
         }
 
         fseek(arquivo, -1, SEEK_CUR);
