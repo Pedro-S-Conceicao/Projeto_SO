@@ -1,76 +1,87 @@
+//  Projeto Prático da disciplina TT304 – Sistemas Operacionais
+
+//  Prof. André Leon S. Gradvohl, Dr. gradvohl@ft.unicamp.br
+
+//  GRUPO : Threadreapper
+//  Pedro dos Santos Conceição - 195514
+//  Sérgio Carlos de Sousa Gregório Junior - 195505
+
+//  projeto prático da disciplina TT304 – Sistemas Operacionais propõe desenvolvimento de um programa para resolução
+//  do seguinte problema:
+//  "O problema a ser resolvido é o seguinte. Dadas três matrizes de entrada, 𝐴ₙₓₙ,𝐵ₙₓₙ e 𝐶ₙₓₙ, o programa deverá calcular
+//  inicialmente a matriz 𝐷ₙₓₙ, tal que 𝐷ₙₓₙ=(𝐴ₙₓₙ + 𝐵ₙₓₙ) e gravá-la em arquivo. Em seguida, o programa deverá calcular a
+//  matriz 𝐸ₙₓₙtal que 𝐸ₙₓₙ=(𝐶ₙₓₙ × 𝐷ₙₓₙ). Por último, a matriz 𝐸ₙₓₙ deve ser gravada em arquivo e reduzida por soma, isto é,
+//  todos os seus componentes devem ser somados, resultando em um único valor final."
+//  Para tanto, o projeto propõe a realização de uma sequência de operações com matrizes de números inteiros, lidos a partir de
+//  arquivos de entradas, e posterior gravação dos resultados em arquivos de saída.
+#define _POSIX_C_SOURCE 199309L
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "tarefas.h"
+#include "tasks.h"
+#include "errorSigns.h"
 
 #define nThreads (atoi(argv[1]))
-#define ordemMatriz (atoi(argv[2]))
-#define arquivoA (argv[3])
-#define arquivoB (argv[4])
-#define arquivoC (argv[5])
-#define arquivoD (argv[6])
-#define arquivoE (argv[7])
+#define matrixOrd (atoi(argv[2]))
+#define fileA (argv[3])
+#define fileB (argv[4])
+#define fileC (argv[5])
+#define fileD (argv[6])
+#define fileE (argv[7])
 
+/**
+ *Função Main - Parâmetros de entrada:
+ * @param nThreads Número de threads T.
+ * @param matrixOrd Ordem da Matriz.
+ * @param file Arquivos de texto.
+ */
 int main(int argc, char *argv[])
 {
+    struct timespec timeStart = {0, 0};
+    struct timespec timeEnd = {0, 0};
+    register double sumTime;
+    register double multTime;
+    register double reduceTime;
+    register double totalTime;
+
+    clock_gettime(CLOCK_MONOTONIC, &timeStart);
+
     if (argc != 8)
     {
         fprintf(stderr, "Número de parâmetros de entrada incorreto\n");
         exit(EXIT_FAILURE);
     }
 
-    clock_t inicio, fim;
-    double *tempoTotal = alocaVariavel();
-    inicio = clock();
+    long int *matrixA = MatrixAlloc(matrixOrd);
+    long int *matrixB = MatrixAlloc(matrixOrd);
+    long int *matrixC = MatrixAlloc(matrixOrd);
+    long int *matrixD = MatrixAlloc(matrixOrd);
+    long int *matrixE = MatrixAlloc(matrixOrd);
 
-    double *tempoSoma = alocaVariavel();
-    double *tempoMultiplicar = alocaVariavel();
-    double *tempoReduzir = alocaVariavel();
+    FilesReaderAndAssignment((matrixOrd), matrixA, matrixB, fileA, fileB, nThreads);
 
-    int *matrizA = alocaVetor(ordemMatriz);
-    int *matrizB = alocaVetor(ordemMatriz);
-    int *matrizC = alocaVetor(ordemMatriz);
-    int *matrizD = alocaVetor(ordemMatriz);
-    int *matrizE = alocaVetor(ordemMatriz);
+    sumTime = SumAndMultTasks((unsigned)(matrixOrd), matrixA, matrixB, matrixD, 'a', (unsigned)(nThreads));
 
-    lerEPreencherMatriz((ordemMatriz), matrizA, matrizB, arquivoA, arquivoB, nThreads);
+    free(matrixB);
 
-    *tempoSoma = tarefasSomarEMultiMatriz((unsigned)(ordemMatriz), (unsigned)(nThreads), matrizA, matrizB, matrizD, 'a');
+    FilesReaderAndWriter((matrixOrd), matrixC, matrixD, fileC, fileD, nThreads);
 
-    free(matrizB);
+    multTime = SumAndMultTasks((unsigned)(matrixOrd), matrixC, matrixD, matrixE, 'b', (unsigned)(nThreads));
 
-    lerEGravarMatriz((ordemMatriz), matrizC, matrizD, arquivoC, arquivoD, nThreads);
+    free(matrixC);
+    free(matrixD);
 
-    *tempoMultiplicar = tarefasSomarEMultiMatriz((unsigned)(ordemMatriz), (unsigned)(nThreads), matrizC, matrizD, matrizE, 'b');
+    reduceTime = MatrixReduceAndWriter((matrixOrd), matrixE, fileE, nThreads);
 
-    free(matrizC);
-    free(matrizD);
+    free(matrixE);
 
-    *tempoReduzir = reduzirEGravarMatriz((ordemMatriz), matrizE, arquivoE, nThreads);
+    clock_gettime(CLOCK_MONOTONIC, &timeEnd);
+    totalTime = timeCalc(timeStart, timeEnd);
 
-    free(matrizE);
-
-    fim = clock() - inicio;
-    *tempoTotal = ((double)fim) / CLOCKS_PER_SEC;
-
-    printf("Tempo soma: %f segundos.\n", *tempoSoma);
-    printf("Tempo multiplicação: %f segundos.\n", *tempoMultiplicar);
-    printf("Tempo redução: %f segundos.\n", *tempoReduzir);
-    printf("Tempo total: %f segundos.\n", *tempoTotal);
+    printf("Tempo soma: %f segundos.\n", sumTime);
+    printf("Tempo multiplicação: %f segundos.\n", multTime);
+    printf("Tempo redução: %f segundos.\n", reduceTime);
+    printf("Tempo total: %f segundos.\n", totalTime);
 
     return 0;
 }
-
-/**
- * Funcao para escrever a matriz em arquivo.dat.
- * @param ordMatriz Ordem da Matriz.
- * @param matriz Ponteiro para o endereço da matriz.
- * @param arqDat Pornteiro para o endereço do arquivo.dat.
- */
-
-/**
- * Funcao para escrever a matriz em arquivo.dat.
- * @param ordMatriz Ordem da Matriz.
- * @param matriz Ponteiro para o endereço da matriz.
- * @param arqDat Pornteiro para o endereço do arquivo.dat.
- */

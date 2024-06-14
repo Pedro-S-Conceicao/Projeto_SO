@@ -1,6 +1,8 @@
 # Makefile Projeto da disciplina de Sistemas operacionais 
 #
-DEP = Main_projeto.c tarefas.c 
+CFLAGS = -O2 -Wall -Wextra
+DEP = Main_projeto.c tasks.c errorSigns.c
+FILES = arqA.dat arqB.dat arqC.dat arqD.dat arqE.dat 
 
 
 Teste01:    projetoSO run01 clean
@@ -16,7 +18,7 @@ Teste05:    projetoSO run05 clean
 Teste06:    projetoSO run06 clean
 	
 projetoSO:
-	@gcc -Wall -Wextra $(DEP) -o $@
+	@gcc $(CFLAGS) $(DEP) -o $@
 
 run01:
 	@./projetoSO 1 100 arq100A.dat arq100B.dat arq100C.dat arq100D.dat arq100E.dat
