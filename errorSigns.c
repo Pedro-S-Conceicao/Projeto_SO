@@ -12,9 +12,9 @@
  * @throw 'e' Problemas na alocação do vetor do tipo pthread_t
  * @throw 'f' Problemas na alocação da matrix
  * @throw 'g' Argumentos na linha de comando inválidos.
- * @throw 'h'
- * @throw 'i'
- * @throw 'j'
+ * @throw 'h' Erro ao abrir o arquivo.dat
+ * @throw 'i' Erro ao ler o arquivo.dat
+ * @throw 'j' Erro ao escrever no arquivo.dat
  * @throw 'k'
  * @throw 'l'
  * @throw 'm'
@@ -54,13 +54,20 @@ void errorSign(char sign)
         exit(EXIT_FAILURE);
         break;
     case 'h':
-        /* code */
+        fprintf(stderr, "Erro ao abrir o arquivo.dat\n");
+        exit(EXIT_FAILURE);
         break;
     case 'i':
-        /* code */
+        fprintf(stderr, "Erro ao ler o arquivo.dat\n");
+        exit(EXIT_FAILURE);
         break;
     case 'j':
-        /* code */
+        fprintf(stderr, "Erro ao escrever no arquivo.dat\n");
+        exit(EXIT_FAILURE);
+        break;
+    case 'k':
+        fprintf(stderr, "\n");
+        exit(EXIT_FAILURE);
         break;
 
     default:

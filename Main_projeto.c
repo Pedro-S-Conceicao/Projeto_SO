@@ -46,12 +46,7 @@ int main(int argc, char *argv[])
     long int nThreads;
     long int matrixOrd;
 
-    if (argc != 8)
-    {
-        errorSign('c');
-    }
-    nThreads = initialParamCheck(nThreadsArgv);
-    matrixOrd = initialParamCheck(matrixOrdArgv);
+    InitialParamCheck(nThreadsArgv, &nThreads, matrixOrdArgv, &matrixOrd, argc); 
 
     clock_gettime(CLOCK_MONOTONIC, &timeStart);
 

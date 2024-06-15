@@ -7,21 +7,32 @@
 #include "errorSigns.h"
 
 /**
- * Função que converte a parte inicial de uma string em um valor long int. Caso a string seja inciada de caracteres o programa se encerra.
- * @param arg Ponteiro para endereço do argumento
+ * Função que checa os argumentos de entrada, verificando se a quantidade de argumentos é válida e convertendo a parte inicial da string dos argumentos em um valor long int. Caso a quantidade de argumentos seja inválida ou a string seja iniciada de caracteres, o programa se encerra.
+ * @param argThreads Ponteiro para endereço do argumento das threads
+ * @param nThreads Ponteiro para endereço de memória do número de threads de tipo long int
+ * @param argmatrixOrd Ponteiro para endereço do argumento da ordem da matriz
+ * @param matrixOrd Ponteiro para endereço de memória da ordem da matriz tipo long int
+ * @param argc Número de argumentos de entrada 
  * @throw Argumentos na linha de comando inválidos.
  */
-long int initialParamCheck(char *arg)
+void InitialParamCheck(char *argThreads, long int *nThreads, char *argmatrixOrd, long int *matrixOrd, int argc)
 {
     char *str;
-    long ret;
 
-    if ((ret = (strtol(arg, &str, 10))) == 0)
+    if (argc != 8)
+    {
+        errorSign('c');
+    }
+    else if ((*nThreads = (strtol(argThreads, &str, 10))) == 0)
     {
         fprintf(stderr, "O argumento \"%s\" é uma string\nExecute o Programa com um argumento válido", str);
         errorSign('g');
-    };
-    return ret;
+    }
+    else if ((*matrixOrd = (strtol(argmatrixOrd, &str, 10))) == 0)
+    {
+        fprintf(stderr, "O argumento \"%s\" é uma string\nExecute o Programa com um argumento válido", str);
+        errorSign('g');
+    }
 }
 
 /**
@@ -364,7 +375,7 @@ double MatrixReduceAndWriter(int matrixOrd, long int *matrizE, char *fileDat_A, 
 }
 
 /**
- * Função para a tarefa de somar a matrizA com a matrizB gravando na matrizD e a tarefa de multiplicar a matrizC pela matrizD gravando na matrizE.
+ * Função para criação e chamada da função thrdP_Sum e thrdP_Mult, de somar a matrizA com a matrizB gravando na matrizD e a tarefa de multiplicar a matrizC pela matrizD gravando na matrizE, respectivamente.
  * @param matrixOrd Ordem da Matriz.
  * @param matriz_(A/B/C) Ponteiro para o endereço da matriz A,B e D, respectivamente.
  * @param task Indicação da tarefa a ser realizada ('a' para soma e 'b' para multiplicação)
@@ -566,6 +577,10 @@ void *thrdReading(void *args)
     matrixOrd = ((ThreadParameters *)args)->matrix_Ord;
     matriz_A = ((ThreadParameters *)args)->matrix_1;
     FILE *fileDat = fopen((((ThreadParameters *)args)->file_Dat), "r");
+    if (fileDat == NULL)
+    {
+        errorSign('h');
+    }
 
     for (line = 0; line < matrixOrd; line++)
     {
@@ -573,9 +588,8 @@ void *thrdReading(void *args)
         {
             if (!fscanf(fileDat, "%ld", &matriz_A[position(line, column, numColumns)]))
             {
-                perror("Erro ao ler o arquivo");
                 fclose(fileDat);
-                exit(1);
+                errorSign('i');
             }
         }
     }
@@ -602,17 +616,27 @@ void *thrdWriting(void *args)
 
     matrixOrd = ((ThreadParameters *)args)->matrix_Ord;
     matriz_A = ((ThreadParameters *)args)->matrix_1;
-    FILE *arqDat = fopen((((ThreadParameters *)args)->file_Dat), "r+");
+    FILE *fileDat = fopen((((ThreadParameters *)args)->file_Dat), "r+");
+    if (fileDat == NULL)
+    {
+        errorSign('h');
+    }
 
     for (line = 0; line < (matrixOrd); ++line)
     {
         for (column = 0; column < (matrixOrd); ++column)
         {
-            fprintf(arqDat, "%ld ", matriz_A[position(line, column, numColumns)]);
+            if (!fprintf(fileDat, "%ld ", matriz_A[position(line, column, numColumns)]))
+            {
+                errorSign('j');
+            };
         }
 
-        fseek(arqDat, -1, SEEK_CUR);
-        fputc('\n', arqDat);
+        fseek(fileDat, -1, SEEK_CUR);
+        if ((fputc('\n', fileDat)) == EOF)
+        {
+            errorSign('j');
+        }
     }
 
     return NULL;
