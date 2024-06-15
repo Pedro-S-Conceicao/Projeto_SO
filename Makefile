@@ -30,7 +30,7 @@ Teste06:    run06
 $(BIN)projetoSO.exe: $(OBJS)
 	@$(CC) -o $@ $^
 
-$(OBJ)%.o: $(SRC)%.c
+$(BUILD)%.o: $(SRC)%.c
 	@$(CC) $(CFLAGS) -c -o $@ $^
 
 run01:

@@ -8,11 +8,11 @@
 
 /**
  * Função que checa os argumentos de entrada, verificando se a quantidade de argumentos é válida e convertendo a parte inicial da string dos argumentos em um valor long int. Caso a quantidade de argumentos seja inválida ou a string seja iniciada de caracteres, o programa se encerra.
- * @param argThreads Ponteiro para endereço do argumento das threads
- * @param nThreads Ponteiro para endereço de memória do número de threads de tipo long int
- * @param argmatrixOrd Ponteiro para endereço do argumento da ordem da matriz
- * @param matrixOrd Ponteiro para endereço de memória da ordem da matriz tipo long int
- * @param argc Número de argumentos de entrada
+ * @param argThreads Ponteiro para endereço do argumento das threads.
+ * @param nThreads Ponteiro para endereço de memória do número de threads de tipo long int.
+ * @param argmatrixOrd Ponteiro para endereço do argumento da ordem da matriz.
+ * @param matrixOrd Ponteiro para endereço de memória da ordem da matriz tipo long int.
+ * @param argc Número de argumentos de entrada.
  * @throw Argumentos na linha de comando inválidos.
  */
 void InitialParamCheck(char *argThreads, long int *nThreads, char *argmatrixOrd, long int *matrixOrd, int argc)
@@ -48,11 +48,12 @@ void InitialParamCheck(char *argThreads, long int *nThreads, char *argmatrixOrd,
  * Funcao para calcular o tempo decorrido entre duas marcacoes.
  * @param tstart Marcacao do inicio da contagem de tempo.
  * @param tend Marcacao do final da contagem de tempo.
+ * @return Tempo decorrido.
  */
-double timeCalc(struct timespec tstart, struct timespec tend)
+double timeCalc(struct timespec timeStart, struct timespec timeEnd)
 {
-    return ((double)tend.tv_sec + 1.0e-9 * tend.tv_nsec) -
-           ((double)tstart.tv_sec + 1.0e-9 * tstart.tv_nsec);
+    return ((double)timeEnd.tv_sec + 1.0e-9 * timeEnd.tv_nsec) -
+           ((double)timeStart.tv_sec + 1.0e-9 * timeStart.tv_nsec);
 }
 
 /**
@@ -274,6 +275,7 @@ void FilesReaderAndAssignment(int matrixOrd, long int *matrix_A, long int *matri
  * @param matrix Ponteiro para o endereço da matriz.
  * @param file Ponteiro para o endereço do arquivo.dat.
  * @param nThreads Número de threads T.
+ * @return Tempo de redução.
  * @throw Saída de fluxo de texto e posterior encerramento do programa quando há erro na criação ou junção das threads.
  */
 double MatrixReduceAndWriter(int matrixOrd, long int *matrizE, char *fileDat_A, unsigned int nThreads)
@@ -376,8 +378,9 @@ double MatrixReduceAndWriter(int matrixOrd, long int *matrizE, char *fileDat_A, 
  * Função para criação e chamada da função thrdP_Sum e thrdP_Mult, de somar a matrizA com a matrizB gravando na matrizD e a tarefa de multiplicar a matrizC pela matrizD gravando na matrizE, respectivamente.
  * @param matrixOrd Ordem da Matriz.
  * @param matriz_(A/B/C) Ponteiro para o endereço da matriz A,B e D, respectivamente.
- * @param task Indicação da tarefa a ser realizada ('a' para soma e 'b' para multiplicação)
- * @param nThreads Número de threads usadas para as tarefas
+ * @param task Indicação da tarefa a ser realizada ('a' para soma e 'b' para multiplicação).
+ * @param nThreads Número de threads usadas para as tarefas.
+ * @return Tempo de soma ou de multiplicação.
  * @throw Saída de fluxo de texto e posterior encerramento do programa quando há erro na criação ou junção das threads.
  */
 float SumAndMultTasks(unsigned int matrixOrd, long int *matriz_A, long int *matriz_B, long int *matriz_C, char task, unsigned int nThreads)
@@ -479,9 +482,9 @@ float SumAndMultTasks(unsigned int matrixOrd, long int *matriz_A, long int *matr
  * @param args Argumentos passados a thread. Esses argumentos sao:
  * @param start_Pos Posicao inicial do vetor.
  * @param end_Pos A posicao final do vetor.
- * @param matrix_Ord A ordem da matriz
+ * @param matrix_Ord A ordem da matriz.
+ * @param n_Threads Número de threads.
  * @param matrix Ponteiro para o endereço da matriz.
- * @return Soma dos elementos
  */
 void *thrdP_Sum(void *args)
 {
@@ -520,8 +523,8 @@ void *thrdP_Sum(void *args)
  * @param start_Pos Posicao inicial do vetor.
  * @param end_Pos A posicao final do vetor.
  * @param matrix_Ord A ordem da matriz
+ * @param n_Threads Número de threads
  * @param matrix Ponteiro para o endereço da matriz.
- * @return Soma dos elementos
  */
 void *thrdP_Mult(void *args)
 {
@@ -562,12 +565,11 @@ void *thrdP_Mult(void *args)
 }
 
 /**
- * Função (thread) que lê um arquivo.dat e atribui à uma matriz
+ * Função (thread) que lê um arquivo.dat e atribui os valores à uma matriz
  * @param args Argumentos passados a thread. Esses argumentos sao:
  * @param matrix_Ord A ordem da matriz.
  * @param matrix Ponteiro para o endereço da matriz.
  * @param file_Dat Ponteiro para o endereço do arquivo.dat.
- * @return Soma dos elementos
  */
 void *thrdReading(void *args)
 {
@@ -607,7 +609,6 @@ void *thrdReading(void *args)
  * @param matrix_Ord A ordem da matriz.
  * @param matrix Ponteiro para o endereço da matriz.
  * @param file_Dat Ponteiro para o endereço do arquivo.dat.
- * @return Soma dos elementos
  */
 void *thrdWriting(void *args)
 {
@@ -646,14 +647,13 @@ void *thrdWriting(void *args)
 
 /**
  * Função (thread) para escrever matrizes em arquivo.dat.
- * de uma matriz
  * @param args Argumentos passados a thread. Esses argumentos sao:
  * @param start_Pos Posicao inicial do vetor.
  * @param end_Pos A posicao final do vetor.
  * @param matrix_Ord A ordem da matriz.
+ * @param n_Threads Número de threads
  * @param matrix Ponteiro para o endereço da matriz.
- * @param partial_Result Resultado parcial da redução por soma
- * @return Soma dos elementos
+ * @param partial_Result Ponteiro para endereço do resultado parcial da redução por soma
  */
 void *thrdP_Reduce(void *args)
 {
@@ -684,53 +684,3 @@ void *thrdP_Reduce(void *args)
 
     return NULL;
 }
-
-/**
- * Funcao para ler o arquivo.dat, que possui os dados da matriz, e atribuí-los a uma matriz.
- * @param matrixOrd Ordem da Matriz.
- * @param matriz Ponteiro para o endereço da matriz.
- * @param arqDat Pornteiro para o endereço do arquivo.dat.
- */
-// void preencherMatriz(int matrixOrd, int *matriz, char *arqDat)
-// {
-//     FILE *arquivo = fopen(arqDat, "r");
-//     int line = (int *)malloc(sizeof(int));
-//     int column = (int *)malloc(sizeof(int));
-//     if ((line == NULL) || (column == NULL))
-//     {
-//         printf("Memória insuficiente!!!\n");
-//         exit(EXIT_FAILURE);
-//     }
-
-//     for (line = 0; line < (matrixOrd); ++line)
-//     {
-//         char aux = (char *)malloc(sizeof(char));
-//         if (aux != 0)
-//         {
-//             fprintf(stderr, "Erro na alocação da variável\n");
-//             exit(EXIT_FAILURE);
-//         }
-
-//         for (column = 0; column < (matrixOrd); ++column)
-//         {
-//             aux = fgetc(arquivo);
-//             matriz[posicao(line, column, numColumns)] = (aux - 48);
-
-//             if ((aux == ' ') || (aux == '\n'))
-//                 --column;
-//         }
-
-//         free(aux);
-//     }
-
-//     free(line);
-//     free(column);
-//     fclose(arquivo);
-// }
-
-/**
- * Funcao para escrever a matriz em arquivo.dat.
- * @param matrixOrd Ordem da Matriz.
- * @param matriz Ponteiro para o endereço da matriz.
- * @param arqDat Pornteiro para o endereço do arquivo.dat.
- */

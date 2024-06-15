@@ -31,8 +31,8 @@
 
 /**
  *Função Main - Parâmetros de entrada:
- * @param nThreads Número de threads T.
- * @param matrixOrd Ordem da Matriz.
+ * @param nThreadsArgv Número de threads T.
+ * @param matrixOrdArgv Ordem da Matriz.
  * @param file Arquivos de texto.
  */
 int main(int argc, char *argv[])
