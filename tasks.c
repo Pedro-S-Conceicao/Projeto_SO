@@ -7,6 +7,24 @@
 #include "errorSigns.h"
 
 /**
+ * Função que converte a parte inicial de uma string em um valor long int. Caso a string seja inciada de caracteres o programa se encerra.
+ * @param arg Ponteiro para endereço do argumento
+ * @throw Argumentos na linha de comando inválidos.
+ */
+long int initialParamCheck(char *arg)
+{
+    char *str;
+    long ret;
+
+    if ((ret = (strtol(arg, &str, 10))) == 0)
+    {
+        fprintf(stderr, "O argumento \"%s\" é uma string\nExecute o Programa com um argumento válido", str);
+        errorSign('g');
+    };
+    return ret;
+}
+
+/**
  * Definição para acesso às posições do vetor bidimensional alocado dinâmicamente.
  * @param line Indicação da linha no vetor.
  * @param columns Indicação da coluna no vetor.
@@ -38,8 +56,7 @@ ThreadParameters *vectorParameterAlloc(unsigned int nThreads)
 
     if ((vector = (ThreadParameters *)malloc(sizeof(ThreadParameters) * nThreads)) == NULL)
     {
-        fprintf(stderr, "Problemas na alocação do vetor\n");
-        exit(EXIT_FAILURE);
+        errorSign('d');
     }
 
     return vector;
@@ -60,8 +77,7 @@ pthread_t *ThreadIDAlloc(unsigned int size)
 
     if ((vector = (pthread_t *)malloc(sizeof(pthread_t) * size)) == NULL)
     {
-        fprintf(stderr, "Problemas na alocação do vetor\n");
-        exit(EXIT_FAILURE);
+        errorSign('e');
     }
 
     return vector;
@@ -78,8 +94,7 @@ long int *MatrixAlloc(int matrixOrd)
 
     if ((matrix = (long int *)malloc((matrixOrd) * (matrixOrd) * sizeof(long int))) == NULL)
     {
-        fprintf(stderr, "Problemas na alocação do vetor\n");
-        exit(EXIT_FAILURE);
+        errorSign('f');
     }
 
     return matrix;
@@ -150,8 +165,7 @@ void FilesReaderAndWriter(int matrixOrd, long int *matrix_A, long int *matrix_B,
 
             if (errDetector != 0)
             {
-                fprintf(stderr, "Erro na criação do thread %d\n", i);
-                exit(EXIT_FAILURE);
+                errorSign('a');
             }
         }
 
@@ -161,8 +175,7 @@ void FilesReaderAndWriter(int matrixOrd, long int *matrix_A, long int *matrix_B,
 
             if (errDetector != 0)
             {
-                fprintf(stderr, "Erro na junção do thread %d\n", i);
-                exit(EXIT_FAILURE);
+                errorSign('b');
             }
         }
     }
@@ -228,8 +241,7 @@ void FilesReaderAndAssignment(int matrixOrd, long int *matrix_A, long int *matri
 
             if (errDetector != 0)
             {
-                fprintf(stderr, "Erro na criação do thread %d\n", i);
-                exit(EXIT_FAILURE);
+                errorSign('a');
             }
         }
 
@@ -239,8 +251,7 @@ void FilesReaderAndAssignment(int matrixOrd, long int *matrix_A, long int *matri
 
             if (errDetector != 0)
             {
-                fprintf(stderr, "Erro na junção do thread %d\n", i);
-                exit(EXIT_FAILURE);
+                errorSign('b');
             }
         }
     }
@@ -290,8 +301,7 @@ double MatrixReduceAndWriter(int matrixOrd, long int *matrizE, char *fileDat_A, 
                                          &parameters[i]);
             if (errDetector != 0)
             {
-                fprintf(stderr, "Erro na criação do thread %d\n", i);
-                exit(EXIT_FAILURE);
+                errorSign('a');
             }
         }
 
@@ -314,8 +324,7 @@ double MatrixReduceAndWriter(int matrixOrd, long int *matrizE, char *fileDat_A, 
             pthread_join(idsThread[i], NULL);
             if (errDetector != 0)
             {
-                fprintf(stderr, "Erro na junção do thread %d\n", i);
-                exit(EXIT_FAILURE);
+                errorSign('b');
             }
         }
         clock_gettime(CLOCK_MONOTONIC, &timeEnd);
@@ -355,7 +364,7 @@ double MatrixReduceAndWriter(int matrixOrd, long int *matrizE, char *fileDat_A, 
 }
 
 /**
- * Função para a tarefa de somar a matrizA com a matrizB gravando na matrizD ou a tarefa de multiplicar a matrizC pela matrizD gravando na matrizE.
+ * Função para a tarefa de somar a matrizA com a matrizB gravando na matrizD e a tarefa de multiplicar a matrizC pela matrizD gravando na matrizE.
  * @param matrixOrd Ordem da Matriz.
  * @param matriz_(A/B/C) Ponteiro para o endereço da matriz A,B e D, respectivamente.
  * @param task Indicação da tarefa a ser realizada ('a' para soma e 'b' para multiplicação)
@@ -436,8 +445,7 @@ float SumAndMultTasks(unsigned int matrixOrd, long int *matriz_A, long int *matr
 
             if (err != 0)
             {
-                fprintf(stderr, "Erro na criação do thread %d\n", i);
-                exit(EXIT_FAILURE);
+                errorSign('a');
             }
         }
 
@@ -447,8 +455,7 @@ float SumAndMultTasks(unsigned int matrixOrd, long int *matriz_A, long int *matr
 
             if (err != 0)
             {
-                fprintf(stderr, "Erro na junção do thread %d\n", i);
-                exit(EXIT_FAILURE);
+                errorSign('b');
             }
         }
         clock_gettime(CLOCK_MONOTONIC, &timeEnd);

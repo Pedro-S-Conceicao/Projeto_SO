@@ -1,6 +1,6 @@
-// #ifndef _ERRORSIGNS
-// #define _ERRORSIGNS
+#ifndef _ERRORSIGNS
+#define _ERRORSIGNS
 
-// void errorSign(char sign);
+void errorSign(char sign);
 
-// #endif
+#endif

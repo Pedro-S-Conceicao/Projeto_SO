@@ -24,6 +24,9 @@ typedef struct
     long int *partial_Result;
 } ThreadParameters;
 
+
+long int initialParamCheck(char *arg);
+
 double timeCalc(struct timespec tstart, struct timespec tend);
 
 ThreadParameters *vectorParameterAlloc(unsigned int nThreads);

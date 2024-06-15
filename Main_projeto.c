@@ -21,8 +21,8 @@
 #include "tasks.h"
 #include "errorSigns.h"
 
-#define nThreads (atoi(argv[1]))
-#define matrixOrd (atoi(argv[2]))
+#define nThreadsArgv (argv[1])
+#define matrixOrdArgv (argv[2])
 #define fileA (argv[3])
 #define fileB (argv[4])
 #define fileC (argv[5])
@@ -43,13 +43,21 @@ int main(int argc, char *argv[])
     register double multTime;
     register double reduceTime;
     register double totalTime;
+    long int nThreads;
+    long int matrixOrd;
+
+    if (argc != 8)
+    {
+        errorSign('c');
+    }
+    nThreads = initialParamCheck(nThreadsArgv);
+    matrixOrd = initialParamCheck(matrixOrdArgv);
 
     clock_gettime(CLOCK_MONOTONIC, &timeStart);
 
     if (argc != 8)
     {
-        fprintf(stderr, "Número de parâmetros de entrada incorreto\n");
-        exit(EXIT_FAILURE);
+        errorSign('c');
     }
 
     long int *matrixA = MatrixAlloc(matrixOrd);
