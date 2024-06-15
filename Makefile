@@ -1,42 +1,55 @@
 # Makefile Projeto da disciplina de Sistemas operacionais 
 #
+BIN = ./bin/
+BUILD = ./build/
+SRC = ./src/
+DATA_DIR = ./data/arqA.dat ./data/arqB.dat ./data/arqC.dat ./data/arqD.dat ./data/arqE.dat
+OBJS = $(BUILD)Main_projeto.o $(BUILD)tasks.o $(BUILD)errorSigns.o
+CC = gcc
 CFLAGS = -O2 -Wall -Wextra
-DEP = Main_projeto.c tasks.c errorSigns.c
-FILES = arqA.dat arqB.dat arqC.dat arqD.dat arqE.dat 
+ORD100 = 100
+ORD1000 = 1000
+1THRD = 1
+2THRD = 2
+4THRD = 4
 
+Compilar:	$(BIN)projetoSO.exe
 
-Teste01:    projetoSO run01 clean
+Teste01:    run01 
 
-Teste02:	projetoSO run02 clean
+Teste02:    run02 
 
-Teste03:    projetoSO run03 clean
+Teste03:    run03 
 
-Teste04:    projetoSO run04 clean
+Teste04:    run04 
 
-Teste05:    projetoSO run05 clean
+Teste05:    run05 
 
-Teste06:    projetoSO run06 clean
+Teste06:    run06 
 	
-projetoSO:
-	@gcc $(CFLAGS) $(DEP) -o $@
+$(BIN)projetoSO.exe: $(OBJS)
+	@$(CC) -o $@ $^
+
+$(OBJ)%.o: $(SRC)%.c
+	@$(CC) $(CFLAGS) -c -o $@ $^
 
 run01:
-	@./projetoSO 1 100 arq100A.dat arq100B.dat arq100C.dat arq100D.dat arq100E.dat
+	@$(BIN)projetoSO.exe $(1THRD) $(ORD100) arq100A.dat arq100B.dat arq100C.dat arq100D.dat arq100E.dat
 
 run02:
-	@./projetoSO 1 1000 arq1000A.dat arq1000B.dat arq1000C.dat arq1000D.dat arq1000E.dat
+	@$(BIN)projetoSO.exe $(2THRD) $(ORD100) arq100A.dat arq100B.dat arq100C.dat arq100D.dat arq100E.dat
 
 run03:
-	@./projetoSO 2 100 arq100A.dat arq100B.dat arq100C.dat arq100D.dat arq100E.dat
+	@$(BIN)projetoSO.exe $(4THRD) $(ORD100) arq100A.dat arq100B.dat arq100C.dat arq100D.dat arq100E.dat
 
 run04:
-	@./projetoSO 2 1000 arq1000A.dat arq1000B.dat arq1000C.dat arq1000D.dat arq1000E.dat
-
+	@$(BIN)projetoSO.exe $(1THRD) $(ORD1000) arq1000A.dat arq1000B.dat arq1000C.dat arq1000D.dat arq1000E.dat
+	
 run05:
-	@./projetoSO 4 100 arq100A.dat arq100B.dat arq100C.dat arq100D.dat arq100E.dat
+	@$(BIN)projetoSO.exe $(2THRD) $(ORD1000) arq1000A.dat arq1000B.dat arq1000C.dat arq1000D.dat arq1000E.dat
 
 run06:
-	@./projetoSO 4 1000 arq1000A.dat arq1000B.dat arq1000C.dat arq1000D.dat arq1000E.dat
+	@$(BIN)projetoSO.exe $(4THRD) $(ORD1000) arq1000A.dat arq1000B.dat arq1000C.dat arq1000D.dat arq1000E.dat
 
 clean:
-	@rm projetoSO
+	@rm -rf $(BIN)*.exe $(BUILD)*.o
