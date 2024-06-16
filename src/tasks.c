@@ -298,8 +298,6 @@ double MatrixReduceAndWriter(int matrixOrd, long int *matrizE, char *fileDat_A, 
 
         thrdWriting((void *)&parameters[i]);
 
-        clock_gettime(CLOCK_MONOTONIC, &timeStart);
-
         i = 1;
         parameters[i].start_Pos = 0;
         parameters[i].end_Pos = matrixOrd;
@@ -307,6 +305,8 @@ double MatrixReduceAndWriter(int matrixOrd, long int *matrizE, char *fileDat_A, 
         parameters[i].matrix_1 = matrizE;
         parameters[i].n_Threads = nThreads;
         parameters[i].partial_Result = &partialResult;
+
+        clock_gettime(CLOCK_MONOTONIC, &timeStart);
 
         thrdP_Reduce((void *)&parameters[i]);
 
@@ -641,7 +641,7 @@ void *thrdWriting(void *args)
             errorSign('j');
         }
     }
-
+    fclose(fileDat);
     return NULL;
 }
 

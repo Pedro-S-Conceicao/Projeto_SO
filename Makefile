@@ -13,19 +13,19 @@ ORD1000 = 1000
 2THRD = 2
 4THRD = 4
 
-Compilar:	$(BIN)projetoSO.exe
+compilar:	$(BIN)projetoSO.exe
 
-Teste01:    run01 
+teste01:    run01 
 
-Teste02:    run02 
+teste02:    run02 
 
-Teste03:    run03 
+teste03:    run03 
 
-Teste04:    run04 
+teste04:    run04 
 
-Teste05:    run05 
+teste05:    run05 
 
-Teste06:    run06 
+teste06:    run06 
 	
 $(BIN)projetoSO.exe: $(OBJS)
 	@$(CC) -o $@ $^

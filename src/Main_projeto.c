@@ -28,6 +28,7 @@
 #define fileC (argv[5])
 #define fileD (argv[6])
 #define fileE (argv[7])
+#define fileF (argv[8])
 
 /**
  *Função Main - Parâmetros de entrada:
@@ -46,14 +47,9 @@ int main(int argc, char *argv[])
     long int nThreads;
     long int matrixOrd;
 
-    InitialParamCheck(nThreadsArgv, &nThreads, matrixOrdArgv, &matrixOrd, argc); 
+    InitialParamCheck(nThreadsArgv, &nThreads, matrixOrdArgv, &matrixOrd, argc);
 
     clock_gettime(CLOCK_MONOTONIC, &timeStart);
-
-    if (argc != 8)
-    {
-        errorSign('c');
-    }
 
     long int *matrixA = MatrixAlloc(matrixOrd);
     long int *matrixB = MatrixAlloc(matrixOrd);
