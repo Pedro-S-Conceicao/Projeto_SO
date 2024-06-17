@@ -16,7 +16,7 @@ ORD1000 = 1000
 criarDir:
 	@mkdir build bin
 
-compilar:	$(BIN)projetoSO.exe
+compilar:	$(BIN)programa
 
 teste01:    run01 
 
@@ -30,32 +30,32 @@ teste05:    run05
 
 teste06:    run06 
 	
-$(BIN)projetoSO.exe: $(OBJS)
+$(BIN)programa: $(OBJS)
 	@$(CC) -o $@ $^
 
 $(BUILD)%.o: $(SRC)%.c
 	@$(CC) $(CFLAGS) -c -o $@ $^
 
 run01:
-	@$(BIN)projetoSO.exe $(1THRD) $(ORD100) $(DATA_DIR)
+	@$(BIN)programa $(1THRD) $(ORD100) $(DATA_DIR)
 
 run02:
-	@$(BIN)projetoSO.exe $(2THRD) $(ORD100) $(DATA_DIR)
+	@$(BIN)programa $(2THRD) $(ORD100) $(DATA_DIR)
 
 run03:
-	@$(BIN)projetoSO.exe $(4THRD) $(ORD100) $(DATA_DIR)
+	@$(BIN)programa $(4THRD) $(ORD100) $(DATA_DIR)
 
 run04:
-	@$(BIN)projetoSO.exe $(1THRD) $(ORD1000) $(DATA_DIR)
+	@$(BIN)programa $(1THRD) $(ORD1000) $(DATA_DIR)
 	
 run05:
-	@$(BIN)projetoSO.exe $(2THRD) $(ORD1000) $(DATA_DIR)
+	@$(BIN)programa $(2THRD) $(ORD1000) $(DATA_DIR)
 
 run06:
-	@$(BIN)projetoSO.exe $(4THRD) $(ORD1000) $(DATA_DIR)
+	@$(BIN)programa $(4THRD) $(ORD1000) $(DATA_DIR)
 
 clean:
-	@rm -rf $(BIN)*.exe $(BUILD)*.o
+	@rm -rf $(BIN)* $(BUILD)*.o
 
 cleanDir:
 	@rm -r $(BIN) $(BUILD)

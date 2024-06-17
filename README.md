@@ -21,7 +21,7 @@ O Makefile inclui comandos para realizar testes com diferentes números de threa
 - ```make teste04``` : Executa o programa com 1 thread e matrizes de ordem 1000.
 * ```make teste05``` : Executa o programa com 2 threads e matrizes de ordem 1000.
 + ```make teste06``` : Executa o programa com 4 threads e matrizes de ordem 1000.
-Para limpar os arquivos objeto e executáveis gerados, use o comando 
+Para limpar os arquivos objeto e executáveis gerados, use o comando:
 ```
 make clean
 ```
