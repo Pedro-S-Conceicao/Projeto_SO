@@ -19,9 +19,11 @@ Para limpar os arquivos objeto e executáveis gerados, use o comando ***make cle
 
 ## Entradas e Saídas
 Os arquivos das matrizes A, B, C, D e E devem estar disponíveis no diretório data/ e devem seguir o formato texto em linha/coluna de uma matriz, assim como no exemplo abaixo:
+```
 1 1 1
 1 1 1
 1 1 1
+```
 
 O nome dos arquivos devem seguir o padrão: arqA.dat, arqB.dat... Além disso devem estar no diretório Projeto_SO/data/
 
