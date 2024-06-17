@@ -13,6 +13,9 @@ ORD1000 = 1000
 2THRD = 2
 4THRD = 4
 
+criarDir:
+	@mkdir build bin
+
 compilar:	$(BIN)projetoSO.exe
 
 teste01:    run01 
@@ -53,3 +56,6 @@ run06:
 
 clean:
 	@rm -rf $(BIN)*.exe $(BUILD)*.o
+
+cleanDir:
+	@rm -r $(BIN) $(BUILD)
