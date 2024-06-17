@@ -404,7 +404,6 @@ float SumAndMultTasks(unsigned int matrixOrd, long int *matriz_A, long int *matr
     }
     }
 
-
     if (nThreads == 1)
     {
         parameters = vectorParameterAlloc(1);
