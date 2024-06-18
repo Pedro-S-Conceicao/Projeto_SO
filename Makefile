@@ -1,5 +1,5 @@
 # Makefile Projeto da disciplina de Sistemas operacionais 
-#
+
 BIN = ./bin/
 BUILD = ./build/
 SRC = ./src/
@@ -13,43 +13,37 @@ ORD1000 = 1000
 2THRD = 2
 4THRD = 4
 
-compilar:	$(BIN)projetoSO.exe
+criarDir:
+	@mkdir build bin
 
-teste01:    run01 
-
-teste02:    run02 
-
-teste03:    run03 
-
-teste04:    run04 
-
-teste05:    run05 
-
-teste06:    run06 
-	
-$(BIN)projetoSO.exe: $(OBJS)
+compilar:	$(BIN)programa
+ 
+$(BIN)programa: $(OBJS)
 	@$(CC) -o $@ $^
 
 $(BUILD)%.o: $(SRC)%.c
 	@$(CC) $(CFLAGS) -c -o $@ $^
 
 run01:
-	@$(BIN)projetoSO.exe $(1THRD) $(ORD100) arq100A.dat arq100B.dat arq100C.dat arq100D.dat arq100E.dat
+	@$(BIN)programa $(1THRD) $(ORD100) $(DATA_DIR)
 
 run02:
-	@$(BIN)projetoSO.exe $(2THRD) $(ORD100) arq100A.dat arq100B.dat arq100C.dat arq100D.dat arq100E.dat
+	@$(BIN)programa $(2THRD) $(ORD100) $(DATA_DIR)
 
 run03:
-	@$(BIN)projetoSO.exe $(4THRD) $(ORD100) arq100A.dat arq100B.dat arq100C.dat arq100D.dat arq100E.dat
+	@$(BIN)programa $(4THRD) $(ORD100) $(DATA_DIR)
 
 run04:
-	@$(BIN)projetoSO.exe $(1THRD) $(ORD1000) arq1000A.dat arq1000B.dat arq1000C.dat arq1000D.dat arq1000E.dat
+	@$(BIN)programa $(1THRD) $(ORD1000) $(DATA_DIR)
 	
 run05:
-	@$(BIN)projetoSO.exe $(2THRD) $(ORD1000) arq1000A.dat arq1000B.dat arq1000C.dat arq1000D.dat arq1000E.dat
+	@$(BIN)programa $(2THRD) $(ORD1000) $(DATA_DIR)
 
 run06:
-	@$(BIN)projetoSO.exe $(4THRD) $(ORD1000) arq1000A.dat arq1000B.dat arq1000C.dat arq1000D.dat arq1000E.dat
+	@$(BIN)programa $(4THRD) $(ORD1000) $(DATA_DIR)
 
 clean:
-	@rm -rf $(BIN)*.exe $(BUILD)*.o
+	@rm -rf $(BIN)* $(BUILD)*.o
+
+dirClean:
+	@rm -r $(BIN) $(BUILD)

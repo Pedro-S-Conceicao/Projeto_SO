@@ -391,6 +391,18 @@ float SumAndMultTasks(unsigned int matrixOrd, long int *matriz_A, long int *matr
     ThreadParameters *parameters;
     struct timespec timeStart = {0, 0};
     struct timespec timeEnd = {0, 0};
+    long int *transpose = NULL; 
+
+    if (task == 'b'){
+    transpose = MatrixAlloc(matrixOrd);
+    for (register unsigned int i = 0; i < matrixOrd; i++)
+    {
+        for (register unsigned int j = 0; j < matrixOrd; j++)
+        {
+           transpose[(i * (matrixOrd)) + j] = matriz_B[(j * (matrixOrd)) + i];
+        }
+    }
+    }
 
     if (nThreads == 1)
     {
@@ -400,11 +412,11 @@ float SumAndMultTasks(unsigned int matrixOrd, long int *matriz_A, long int *matr
         parameters[i].matrix_Ord = matrixOrd;
         parameters[i].n_Threads = nThreads;
         parameters[i].matrix_1 = matriz_A;
-        parameters[i].matrix_2 = matriz_B;
         parameters[i].matrix_3 = matriz_C;
 
         if (task == 'a')
         {
+            parameters[i].matrix_2 = matriz_B;
             clock_gettime(CLOCK_MONOTONIC, &timeStart);
 
             thrdP_Sum((void *)&parameters[i]);
@@ -413,6 +425,7 @@ float SumAndMultTasks(unsigned int matrixOrd, long int *matriz_A, long int *matr
         }
         else
         {
+            parameters[i].matrix_2 = transpose;
             clock_gettime(CLOCK_MONOTONIC, &timeStart);
 
             thrdP_Mult((void *)&parameters[i]);
@@ -436,11 +449,11 @@ float SumAndMultTasks(unsigned int matrixOrd, long int *matriz_A, long int *matr
             parameters[i].matrix_Ord = matrixOrd;
             parameters[i].n_Threads = nThreads;
             parameters[i].matrix_1 = matriz_A;
-            parameters[i].matrix_2 = matriz_B;
             parameters[i].matrix_3 = matriz_C;
 
             if (task == 'a')
             {
+                parameters[i].matrix_2 = matriz_B;
                 err = pthread_create(&idsThread[i],
                                      NULL,
                                      thrdP_Sum,
@@ -449,6 +462,7 @@ float SumAndMultTasks(unsigned int matrixOrd, long int *matriz_A, long int *matr
 
             else
             {
+                parameters[i].matrix_2 = transpose;
                 err = pthread_create(&idsThread[i],
                                      NULL,
                                      thrdP_Mult,
@@ -535,7 +549,6 @@ void *thrdP_Mult(void *args)
     register unsigned int line;
     register unsigned int column;
     register unsigned int k;
-    long int somaProduto;
     long int *matriz_A;
     long int *matriz_B;
     long int *matriz_C;
@@ -547,17 +560,15 @@ void *thrdP_Mult(void *args)
     matriz_A = ((ThreadParameters *)args)->matrix_1;
     matriz_B = ((ThreadParameters *)args)->matrix_2;
     matriz_C = ((ThreadParameters *)args)->matrix_3;
-
+    
     for (line = start; line < end; line += nThreads)
     {
         for (column = 0; column < matrixOrd; ++column)
         {
-            somaProduto = 0;
             for (k = 0; k < (matrixOrd); ++k)
             {
-                somaProduto += (matriz_A[(line * (matrixOrd)) + k]) * (matriz_B[(k * (matrixOrd)) + column]);
-            }
-            matriz_C[position(line, column, numColumns)] = somaProduto;
+                matriz_C[position(line, column, numColumns)] += (matriz_A[(line * (matrixOrd)) + k]) * (matriz_B[(line * (matrixOrd)) + k]);
+            }  
         }
     }
 
