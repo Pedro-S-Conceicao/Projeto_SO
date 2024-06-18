@@ -1,5 +1,5 @@
 # Makefile Projeto da disciplina de Sistemas operacionais 
-#
+
 BIN = ./bin/
 BUILD = ./build/
 SRC = ./src/
@@ -17,19 +17,7 @@ criarDir:
 	@mkdir build bin
 
 compilar:	$(BIN)programa
-
-teste01:    run01 
-
-teste02:    run02 
-
-teste03:    run03 
-
-teste04:    run04 
-
-teste05:    run05 
-
-teste06:    run06 
-	
+ 
 $(BIN)programa: $(OBJS)
 	@$(CC) -o $@ $^
 
@@ -57,5 +45,5 @@ run06:
 clean:
 	@rm -rf $(BIN)* $(BUILD)*.o
 
-cleanDir:
+dirClean:
 	@rm -r $(BIN) $(BUILD)
