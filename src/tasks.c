@@ -123,8 +123,8 @@ long int *MatrixAlloc(int matrixOrd)
 void FilesReaderAndWriter(int matrixOrd, long int *matrix_A, long int *matrix_B, char *arqDat_A, char *arqDat_B, unsigned int nThreads)
 {
     ThreadParameters *parameters;
-    register unsigned int i = 0;
-    register unsigned errDetector;
+    unsigned int i = 0;
+    unsigned errDetector;
 
     if (nThreads == 1)
     {
@@ -204,8 +204,8 @@ void FilesReaderAndWriter(int matrixOrd, long int *matrix_A, long int *matrix_B,
 void FilesReaderAndAssignment(int matrixOrd, long int *matrix_A, long int *matrix_B, char *fileDat_A, char *fileDat_B, unsigned int nThreads)
 {
     ThreadParameters *parameters;
-    register unsigned int i = 0;
-    register int errDetector;
+    unsigned int i = 0;
+    int errDetector;
 
     if (nThreads == 1)
     {
@@ -281,9 +281,9 @@ void FilesReaderAndAssignment(int matrixOrd, long int *matrix_A, long int *matri
 double MatrixReduceAndWriter(int matrixOrd, long int *matrizE, char *fileDat_A, unsigned int nThreads)
 {
 
-    register unsigned int i = 0;
+    unsigned int i = 0;
     long int partialResult = 0;
-    register int errDetector;
+    int errDetector;
     double reduceTime;
     ThreadParameters *parameters;
     struct timespec timeStart = {0, 0};
@@ -385,8 +385,8 @@ double MatrixReduceAndWriter(int matrixOrd, long int *matrizE, char *fileDat_A, 
  */
 float SumAndMultTasks(unsigned int matrixOrd, long int *matriz_A, long int *matriz_B, long int *matriz_C, char task, unsigned int nThreads)
 {
-    register unsigned int i = 0;
-    register int err;
+    unsigned int i = 0;
+    int err;
     double totalTime;
     ThreadParameters *parameters;
     struct timespec timeStart = {0, 0};
@@ -395,9 +395,9 @@ float SumAndMultTasks(unsigned int matrixOrd, long int *matriz_A, long int *matr
 
     if (task == 'b'){
     transpose = MatrixAlloc(matrixOrd);
-    for (register unsigned int i = 0; i < matrixOrd; i++)
+    for (unsigned int i = 0; i < matrixOrd; i++)
     {
-        for (register unsigned int j = 0; j < matrixOrd; j++)
+        for (unsigned int j = 0; j < matrixOrd; j++)
         {
            transpose[(i * (matrixOrd)) + j] = matriz_B[(j * (matrixOrd)) + i];
         }
@@ -502,12 +502,12 @@ float SumAndMultTasks(unsigned int matrixOrd, long int *matriz_A, long int *matr
  */
 void *thrdP_Sum(void *args)
 {
-    register unsigned int start;
-    register unsigned int end;
-    register unsigned int matrixOrd;
-    register unsigned int nThreads;
-    register unsigned int line;
-    register unsigned int column;
+    unsigned int start;
+    unsigned int end;
+    unsigned int matrixOrd;
+    unsigned int nThreads;
+    unsigned int line;
+    unsigned int column;
     long int *matriz_A;
     long int *matriz_B;
     long int *matriz_C;
@@ -542,13 +542,13 @@ void *thrdP_Sum(void *args)
  */
 void *thrdP_Mult(void *args)
 {
-    register unsigned int start;
-    register unsigned int end;
-    register unsigned int matrixOrd;
-    register unsigned int nThreads;
-    register unsigned int line;
-    register unsigned int column;
-    register unsigned int k;
+    unsigned int start;
+    unsigned int end;
+    unsigned int matrixOrd;
+    unsigned int nThreads;
+    unsigned int line;
+    unsigned int column;
+    unsigned int k;
     long int *matriz_A;
     long int *matriz_B;
     long int *matriz_C;
@@ -584,9 +584,9 @@ void *thrdP_Mult(void *args)
  */
 void *thrdReading(void *args)
 {
-    register unsigned int matrixOrd;
-    register unsigned int line;
-    register unsigned int column;
+    unsigned int matrixOrd;
+    unsigned int line;
+    unsigned int column;
     long int *matriz_A;
 
     matrixOrd = ((ThreadParameters *)args)->matrix_Ord;
@@ -623,9 +623,9 @@ void *thrdReading(void *args)
  */
 void *thrdWriting(void *args)
 {
-    register unsigned int matrixOrd;
-    register unsigned int line;
-    register unsigned int column;
+    unsigned int matrixOrd;
+    unsigned int line;
+    unsigned int column;
     long int *matriz_A;
 
     matrixOrd = ((ThreadParameters *)args)->matrix_Ord;
@@ -668,12 +668,12 @@ void *thrdWriting(void *args)
  */
 void *thrdP_Reduce(void *args)
 {
-    register unsigned int start;
-    register unsigned int end;
-    register unsigned int matrixOrd;
-    register unsigned int nThreads;
-    register unsigned int line;
-    register unsigned int column;
+    unsigned int start;
+    unsigned int end;
+    unsigned int matrixOrd;
+    unsigned int nThreads;
+    unsigned int line;
+    unsigned int column;
     long int *matriz_A;
     long int redPorSoma = 0;
 
