@@ -916,7 +916,8 @@ Tempo total 4 thrd 1000*1000 (sem o uso de register):
 0.245573 
 0.246692 
 
-Tempo total 1 thrd 1000*1000 (sem o uso de register):0.644435 
+Tempo total 1 thrd 1000*1000 (sem o uso de register):
+0.644435 
 0.678344 
 0.646321 
 0.647706 
