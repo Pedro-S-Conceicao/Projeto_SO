@@ -59,13 +59,13 @@ int main(int argc, char *argv[])
 
     FilesReaderAndAssignment((matrixOrd), matrixA, matrixB, fileA, fileB, nThreads);
 
-    sumTime = SumAndMultTasks((unsigned)(matrixOrd), matrixA, matrixB, matrixD, 'a', (unsigned)(nThreads));
+    sumTime = MatrixSum((unsigned)(matrixOrd), matrixA, matrixB, matrixD, (unsigned)(nThreads));
 
     free(matrixB);
 
     FilesReaderAndWriter((matrixOrd), matrixC, matrixD, fileC, fileD, nThreads);
 
-    multTime = SumAndMultTasks((unsigned)(matrixOrd), matrixC, matrixD, matrixE, 'b', (unsigned)(nThreads));
+    multTime = MatrixMult((unsigned)(matrixOrd), matrixC, matrixD, matrixE, (unsigned)(nThreads));
 
     free(matrixC);
     free(matrixD);

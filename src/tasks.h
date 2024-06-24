@@ -41,7 +41,10 @@ void FilesReaderAndAssignment(int matrixOrd, long int *matrix_A, long int *matri
 
 double MatrixReduceAndWriter(int matrixOrd, long int *matrizE, char *arqDat_E, unsigned int nThreads);
 
-float SumAndMultTasks(unsigned int matrixOrd, long int *matriz_A, long int *matriz_B, long int *matriz_C, char task, unsigned int nThreads);
+float MatrixSum(unsigned int matrixOrd, long int *matriz_A, long int *matriz_B, long int *matriz_C, unsigned int nThreads);
+
+float MatrixMult(unsigned int matrixOrd, long int *matriz_A, long int *matriz_B, long int *matriz_C, unsigned int nThreads);
+
 
 void *thrdP_Sum(void *args);
 

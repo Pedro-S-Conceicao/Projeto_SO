@@ -15,6 +15,8 @@
  * @throw 'h' Erro ao abrir o arquivo.dat
  * @throw 'i' Erro ao ler o arquivo.dat
  * @throw 'j' Erro ao escrever no arquivo.dat
+ * @throw 'k' Número de Threads inválido
+ *
  */
 void errorSign(char sign)
 {
@@ -59,8 +61,11 @@ void errorSign(char sign)
         fprintf(stderr, "Erro ao escrever no arquivo.dat\n");
         exit(EXIT_FAILURE);
         break;
+    case 'k':
+        fprintf(stderr, "Número de Threads inválido\n");
+        exit(EXIT_FAILURE);
     default:
-    fprintf(stderr, "Erro desconhecido\n");
+        fprintf(stderr, "Erro desconhecido\n");
         exit(EXIT_FAILURE);
         break;
     }

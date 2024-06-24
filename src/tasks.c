@@ -33,6 +33,10 @@ void InitialParamCheck(char *argThreads, long int *nThreads, char *argmatrixOrd,
         fprintf(stderr, "O argumento \"%s\" é uma string\nExecute o Programa com um argumento válido", str);
         errorSign('g');
     }
+    else if (*nThreads <= 0)
+    {
+        errorSign('k');
+    }
 }
 
 /**
@@ -83,9 +87,6 @@ ThreadParameters *vectorParameterAlloc(unsigned int nThreads)
 pthread_t *ThreadIDAlloc(unsigned int size)
 {
     pthread_t *vector;
-
-    if (size <= 0)
-        return NULL;
 
     if ((vector = (pthread_t *)malloc(sizeof(pthread_t) * size)) == NULL)
     {
@@ -231,21 +232,16 @@ void FilesReaderAndAssignment(int matrixOrd, long int *matrix_A, long int *matri
         parameters = vectorParameterAlloc(2);
         idsThread = ThreadIDAlloc(2);
 
+        parameters[0].matrix_Ord = matrixOrd;
+        parameters[0].matrix_1 = matrix_A;
+        parameters[0].file_Dat = fileDat_A;
+
+        parameters[1].matrix_Ord = matrixOrd;
+        parameters[1].matrix_1 = matrix_B;
+        parameters[1].file_Dat = fileDat_B;
+
         for (i = 0; i < 2; i++)
         {
-            if (i == 0)
-            {
-                parameters[i].matrix_Ord = matrixOrd;
-                parameters[i].matrix_1 = matrix_A;
-                parameters[i].file_Dat = fileDat_A;
-            }
-            else
-            {
-                parameters[i].matrix_Ord = matrixOrd;
-                parameters[i].matrix_1 = matrix_B;
-                parameters[i].file_Dat = fileDat_B;
-            }
-
             errDetector = pthread_create(&idsThread[i],
                                          NULL,
                                          thrdReading,
@@ -350,8 +346,7 @@ double MatrixReduceAndWriter(int matrixOrd, long int *matrizE, char *fileDat_A, 
                                      (void *)&parameters[i]);
         if (errDetector != 0)
         {
-            fprintf(stderr, "Erro na criação do thread %d\n", i);
-            exit(EXIT_FAILURE);
+            errorSign('a');
         }
 
         for (i = 0; i < (nThreads + 1); i++)
@@ -375,15 +370,14 @@ double MatrixReduceAndWriter(int matrixOrd, long int *matrizE, char *fileDat_A, 
 }
 
 /**
- * Função para criação e chamada da função thrdP_Sum e thrdP_Mult, de somar a matrizA com a matrizB gravando na matrizD e a tarefa de multiplicar a matrizC pela matrizD gravando na matrizE, respectivamente.
+ * Função para criação e chamada da função thrdP_Sum de somar a matrizA com a matrizB gravando na matrizD.
  * @param matrixOrd Ordem da Matriz.
  * @param matriz_(A/B/C) Ponteiro para o endereço da matriz A,B e D, respectivamente.
- * @param task Indicação da tarefa a ser realizada ('a' para soma e 'b' para multiplicação).
  * @param nThreads Número de threads usadas para as tarefas.
- * @return Tempo de soma ou de multiplicação.
+ * @return Tempo de soma.
  * @throw Saída de fluxo de texto e posterior encerramento do programa quando há erro na criação ou junção das threads.
  */
-float SumAndMultTasks(unsigned int matrixOrd, long int *matriz_A, long int *matriz_B, long int *matriz_C, char task, unsigned int nThreads)
+float MatrixSum(unsigned int matrixOrd, long int *matriz_A, long int *matriz_B, long int *matriz_C, unsigned int nThreads)
 {
     unsigned int i = 0;
     int err;
@@ -391,18 +385,6 @@ float SumAndMultTasks(unsigned int matrixOrd, long int *matriz_A, long int *matr
     ThreadParameters *parameters;
     struct timespec timeStart = {0, 0};
     struct timespec timeEnd = {0, 0};
-    long int *transpose = NULL; 
-
-    if (task == 'b'){
-    transpose = MatrixAlloc(matrixOrd);
-    for (unsigned int i = 0; i < matrixOrd; i++)
-    {
-        for (unsigned int j = 0; j < matrixOrd; j++)
-        {
-           transpose[(i * (matrixOrd)) + j] = matriz_B[(j * (matrixOrd)) + i];
-        }
-    }
-    }
 
     if (nThreads == 1)
     {
@@ -413,25 +395,13 @@ float SumAndMultTasks(unsigned int matrixOrd, long int *matriz_A, long int *matr
         parameters[i].n_Threads = nThreads;
         parameters[i].matrix_1 = matriz_A;
         parameters[i].matrix_3 = matriz_C;
+        parameters[i].matrix_2 = matriz_B;
 
-        if (task == 'a')
-        {
-            parameters[i].matrix_2 = matriz_B;
-            clock_gettime(CLOCK_MONOTONIC, &timeStart);
+        clock_gettime(CLOCK_MONOTONIC, &timeStart);
 
-            thrdP_Sum((void *)&parameters[i]);
+        thrdP_Sum((void *)&parameters[i]);
 
-            clock_gettime(CLOCK_MONOTONIC, &timeEnd);
-        }
-        else
-        {
-            parameters[i].matrix_2 = transpose;
-            clock_gettime(CLOCK_MONOTONIC, &timeStart);
-
-            thrdP_Mult((void *)&parameters[i]);
-
-            clock_gettime(CLOCK_MONOTONIC, &timeEnd);
-        }
+        clock_gettime(CLOCK_MONOTONIC, &timeEnd);
     }
 
     else
@@ -450,24 +420,102 @@ float SumAndMultTasks(unsigned int matrixOrd, long int *matriz_A, long int *matr
             parameters[i].n_Threads = nThreads;
             parameters[i].matrix_1 = matriz_A;
             parameters[i].matrix_3 = matriz_C;
+            parameters[i].matrix_2 = matriz_B;
 
-            if (task == 'a')
-            {
-                parameters[i].matrix_2 = matriz_B;
-                err = pthread_create(&idsThread[i],
-                                     NULL,
-                                     thrdP_Sum,
-                                     (void *)&parameters[i]);
-            }
+            err = pthread_create(&idsThread[i],
+                                 NULL,
+                                 thrdP_Sum,
+                                 (void *)&parameters[i]);
 
-            else
+            if (err != 0)
             {
-                parameters[i].matrix_2 = transpose;
-                err = pthread_create(&idsThread[i],
-                                     NULL,
-                                     thrdP_Mult,
-                                     (void *)&parameters[i]);
+                errorSign('a');
             }
+        }
+
+        for (i = 0; i < nThreads; i++)
+        {
+            err = pthread_join(idsThread[i], NULL);
+
+            if (err != 0)
+            {
+                errorSign('b');
+            }
+        }
+        clock_gettime(CLOCK_MONOTONIC, &timeEnd);
+    }
+    totalTime = timeCalc(timeStart, timeEnd);
+
+    return totalTime;
+}
+
+/**
+ * Função para criação e chamada da função thrdP_Mult de multiplicar a matrizC pela matrizD gravando na matrizE.
+ * @param matrixOrd Ordem da Matriz.
+ * @param matriz_(A/B/C) Ponteiro para o endereço da matriz A,B e D, respectivamente.
+ * @param nThreads Número de threads usadas para as tarefas.
+ * @return Tempo de multiplicação.
+ * @throw Saída de fluxo de texto e posterior encerramento do programa quando há erro na criação ou junção das threads.
+ */
+float MatrixMult(unsigned int matrixOrd, long int *matriz_A, long int *matriz_B, long int *matriz_C, unsigned int nThreads)
+{
+    unsigned int i = 0;
+    int err;
+    double totalTime;
+    ThreadParameters *parameters;
+    struct timespec timeStart = {0, 0};
+    struct timespec timeEnd = {0, 0};
+    long int *transpose = NULL;
+
+    transpose = MatrixAlloc(matrixOrd);
+    for (unsigned int i = 0; i < matrixOrd; i++)
+    {
+        for (unsigned int j = 0; j < matrixOrd; j++)
+        {
+            transpose[(i * (matrixOrd)) + j] = matriz_B[(j * (matrixOrd)) + i];
+        }
+    }
+
+    if (nThreads == 1)
+    {
+        parameters = vectorParameterAlloc(1);
+        parameters[i].start_Pos = 0;
+        parameters[i].end_Pos = matrixOrd;
+        parameters[i].matrix_Ord = matrixOrd;
+        parameters[i].n_Threads = nThreads;
+        parameters[i].matrix_1 = matriz_A;
+        parameters[i].matrix_3 = matriz_C;
+        parameters[i].matrix_2 = transpose;
+
+        clock_gettime(CLOCK_MONOTONIC, &timeStart);
+
+        thrdP_Mult((void *)&parameters[i]);
+
+        clock_gettime(CLOCK_MONOTONIC, &timeEnd);
+    }
+
+    else
+    {
+        pthread_t *idsThread;
+        parameters = vectorParameterAlloc(nThreads);
+        idsThread = ThreadIDAlloc(nThreads);
+
+        clock_gettime(CLOCK_MONOTONIC, &timeStart);
+
+        for (i = 0; i < nThreads; i++)
+        {
+            parameters[i].start_Pos = i;
+            parameters[i].end_Pos = (matrixOrd + 1) - (nThreads - i);
+            parameters[i].matrix_Ord = matrixOrd;
+            parameters[i].n_Threads = nThreads;
+            parameters[i].matrix_1 = matriz_A;
+            parameters[i].matrix_3 = matriz_C;
+            parameters[i].matrix_2 = transpose;
+
+            err = pthread_create(&idsThread[i],
+                                 NULL,
+                                 thrdP_Mult,
+                                 (void *)&parameters[i]);
 
             if (err != 0)
             {
@@ -524,7 +572,6 @@ void *thrdP_Sum(void *args)
     {
         for (column = 0; column < matrixOrd; ++column)
         {
-
             matriz_C[position(line, column, numColumns)] = matriz_A[position(line, column, numColumns)] + matriz_B[position(line, column, numColumns)];
         }
     }
@@ -560,7 +607,7 @@ void *thrdP_Mult(void *args)
     matriz_A = ((ThreadParameters *)args)->matrix_1;
     matriz_B = ((ThreadParameters *)args)->matrix_2;
     matriz_C = ((ThreadParameters *)args)->matrix_3;
-    
+
     for (line = start; line < end; line += nThreads)
     {
         for (column = 0; column < matrixOrd; ++column)
@@ -568,7 +615,7 @@ void *thrdP_Mult(void *args)
             for (k = 0; k < (matrixOrd); ++k)
             {
                 matriz_C[position(line, column, numColumns)] += (matriz_A[(line * (matrixOrd)) + k]) * (matriz_B[(line * (matrixOrd)) + k]);
-            }  
+            }
         }
     }
 
