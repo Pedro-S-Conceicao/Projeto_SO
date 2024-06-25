@@ -124,25 +124,24 @@ long int *MatrixAlloc(int matrixOrd)
 void FilesReaderAndWriter(int matrixOrd, long int *matrix_A, long int *matrix_B, char *arqDat_A, char *arqDat_B, unsigned int nThreads)
 {
     ThreadParameters *parameters;
-    unsigned int i = 0;
-    unsigned errDetector;
+
+    unsigned int errDetector;
 
     if (nThreads == 1)
     {
         parameters = vectorParameterAlloc(2);
 
-        parameters[i].matrix_Ord = matrixOrd;
-        parameters[i].matrix_1 = matrix_A;
-        parameters[i].file_Dat = arqDat_A;
+        parameters[0].matrix_Ord = matrixOrd;
+        parameters[0].matrix_1 = matrix_A;
+        parameters[0].file_Dat = arqDat_A;
 
-        thrdReading((void *)&parameters[i]);
+        thrdReading((void *)&parameters[0]);
 
-        i = 1;
-        parameters[i].matrix_Ord = matrixOrd;
-        parameters[i].matrix_1 = matrix_B;
-        parameters[i].file_Dat = arqDat_B;
+        parameters[1].matrix_Ord = matrixOrd;
+        parameters[1].matrix_1 = matrix_B;
+        parameters[1].file_Dat = arqDat_B;
 
-        thrdWriting((void *)&parameters[i]);
+        thrdWriting((void *)&parameters[1]);
     }
 
     else
@@ -151,38 +150,35 @@ void FilesReaderAndWriter(int matrixOrd, long int *matrix_A, long int *matrix_B,
         parameters = vectorParameterAlloc(2);
         idsThread = ThreadIDAlloc(2);
 
-        for (i = 0; i < 2; i++)
+        parameters[0].matrix_Ord = matrixOrd;
+        parameters[0].matrix_1 = matrix_A;
+        parameters[0].file_Dat = arqDat_A;
+
+        errDetector = pthread_create(&idsThread[0],
+                                     NULL,
+                                     thrdReading,
+                                     (void *)&parameters[0]);
+
+        if (errDetector != 0)
         {
-            if (i == 0)
-            {
-                parameters[i].matrix_Ord = matrixOrd;
-                parameters[i].matrix_1 = matrix_A;
-                parameters[i].file_Dat = arqDat_A;
-
-                errDetector = pthread_create(&idsThread[i],
-                                             NULL,
-                                             thrdReading,
-                                             (void *)&parameters[i]);
-            }
-            else
-            {
-                parameters[i].matrix_Ord = matrixOrd;
-                parameters[i].matrix_1 = matrix_B;
-                parameters[i].file_Dat = arqDat_B;
-
-                errDetector = pthread_create(&idsThread[i],
-                                             NULL,
-                                             thrdWriting,
-                                             (void *)&parameters[i]);
-            }
-
-            if (errDetector != 0)
-            {
-                errorSign('a');
-            }
+            errorSign('a');
         }
 
-        for (i = 0; i < 2; i++)
+        parameters[1].matrix_Ord = matrixOrd;
+        parameters[1].matrix_1 = matrix_B;
+        parameters[1].file_Dat = arqDat_B;
+
+        errDetector = pthread_create(&idsThread[1],
+                                       NULL,
+                                       thrdWriting,
+                                       (void *)&parameters[1]);
+
+        if (errDetector != 0)
+        {
+            errorSign('a');
+        }
+
+        for (unsigned int i = 0; i < 2; i++)
         {
             errDetector = pthread_join(idsThread[i], NULL);
 
@@ -205,25 +201,23 @@ void FilesReaderAndWriter(int matrixOrd, long int *matrix_A, long int *matrix_B,
 void FilesReaderAndAssignment(int matrixOrd, long int *matrix_A, long int *matrix_B, char *fileDat_A, char *fileDat_B, unsigned int nThreads)
 {
     ThreadParameters *parameters;
-    unsigned int i = 0;
     int errDetector;
 
     if (nThreads == 1)
     {
         parameters = vectorParameterAlloc(2);
 
-        parameters[i].matrix_Ord = matrixOrd;
-        parameters[i].matrix_1 = matrix_A;
-        parameters[i].file_Dat = fileDat_A;
+        parameters[0].matrix_Ord = matrixOrd;
+        parameters[0].matrix_1 = matrix_A;
+        parameters[0].file_Dat = fileDat_A;
 
-        thrdReading((void *)&parameters[i]);
+        thrdReading((void *)&parameters[0]);
 
-        i = 1;
-        parameters[i].matrix_Ord = matrixOrd;
-        parameters[i].matrix_1 = matrix_B;
-        parameters[i].file_Dat = fileDat_B;
+        parameters[1].matrix_Ord = matrixOrd;
+        parameters[1].matrix_1 = matrix_B;
+        parameters[1].file_Dat = fileDat_B;
 
-        thrdReading((void *)&parameters[i]);
+        thrdReading((void *)&parameters[1]);
     }
 
     else
@@ -240,7 +234,7 @@ void FilesReaderAndAssignment(int matrixOrd, long int *matrix_A, long int *matri
         parameters[1].matrix_1 = matrix_B;
         parameters[1].file_Dat = fileDat_B;
 
-        for (i = 0; i < 2; i++)
+        for (unsigned int i = 0; i < 2; i++)
         {
             errDetector = pthread_create(&idsThread[i],
                                          NULL,
@@ -253,7 +247,7 @@ void FilesReaderAndAssignment(int matrixOrd, long int *matrix_A, long int *matri
             }
         }
 
-        for (i = 0; i < 2; i++)
+        for (unsigned int i = 0; i < 2; i++)
         {
             errDetector = pthread_join(idsThread[i], NULL);
 
@@ -360,9 +354,7 @@ double MatrixReduceAndWriter(int matrixOrd, long int *matrizE, char *fileDat_A, 
         clock_gettime(CLOCK_MONOTONIC, &timeEnd);
     }
 
-    int redPorSoma = partialResult;
-
-    printf("Redução: %d\n", redPorSoma);
+    printf("Redução: %ld\n", partialResult);
 
     reduceTime = timeCalc(timeStart, timeEnd);
 
