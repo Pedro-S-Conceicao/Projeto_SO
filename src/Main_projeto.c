@@ -28,7 +28,6 @@
 #define fileC (argv[5])
 #define fileD (argv[6])
 #define fileE (argv[7])
-#define fileF (argv[8])
 
 /**
  *Função Main - Parâmetros de entrada:
