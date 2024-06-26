@@ -15,12 +15,12 @@ make compilar
 ## Testes
 O Makefile inclui comandos para realizar testes com diferentes números de threads e ordens de matrizes. Lembrando que todos os comandos make devem ser exetutados no diretório Projeto_SO, pois é onde está presente o Makefile:
 
-- ```make teste01``` : Executa o programa com 1 thread e matrizes de ordem 100.
-* ```make teste02```: Executa o programa com 2 threads e matrizes de ordem 100.
-+ ```make teste03``` : Executa o programa com 4 threads e matrizes de ordem 100.
-- ```make teste04``` : Executa o programa com 1 thread e matrizes de ordem 1000.
-* ```make teste05``` : Executa o programa com 2 threads e matrizes de ordem 1000.
-+ ```make teste06``` : Executa o programa com 4 threads e matrizes de ordem 1000.
+- ```make run01``` : Executa o programa com 1 thread e matrizes de ordem 100.
+* ```make run02``` : Executa o programa com 2 threads e matrizes de ordem 100.
++ ```make run03``` : Executa o programa com 4 threads e matrizes de ordem 100.
+- ```make run04``` : Executa o programa com 1 thread e matrizes de ordem 1000.
+* ```make run05``` : Executa o programa com 2 threads e matrizes de ordem 1000.
++ ```make run06``` : Executa o programa com 4 threads e matrizes de ordem 1000.
 Para limpar os arquivos objeto e executáveis gerados, use o comando:
 ```
 make clean
