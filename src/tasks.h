@@ -45,7 +45,6 @@ float MatrixSum(unsigned int matrixOrd, long int *matriz_A, long int *matriz_B, 
 
 float MatrixMult(unsigned int matrixOrd, long int *matriz_A, long int *matriz_B, long int *matriz_C, unsigned int nThreads);
 
-
 void *thrdP_Sum(void *args);
 
 void *thrdP_Mult(void *args);
@@ -55,7 +54,5 @@ void *thrdReading(void *args);
 void *thrdWriting(void *args);
 
 void *thrdP_Reduce(void *args);
-
-void preencherMatriz(int matrixOrd, long int *matriz, char *arqDat);
 
 #endif
