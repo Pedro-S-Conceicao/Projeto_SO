@@ -13,10 +13,12 @@ ORD1000 = 1000
 2THRD = 2
 4THRD = 4
 
-dirCreate:
-	@mkdir build bin
 
-compile:	$(BIN)programa
+
+compile:	dirCreate $(BIN)programa
+
+dirCreate:
+	@mkdir -p build bin
  
 $(BIN)programa: $(OBJS)
 	@$(CC) -o $@ $^
@@ -43,7 +45,4 @@ run06:
 	@$(BIN)programa $(4THRD) $(ORD1000) $(DATA_DIR)
 
 clean:
-	@rm -rf $(BIN)* $(BUILD)*.o
-
-dirClean:
-	@rm -r $(BIN) $(BUILD)
+	@rm -rf $(BIN) $(BUILD)

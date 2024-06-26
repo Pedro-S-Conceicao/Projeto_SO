@@ -33,7 +33,7 @@ void InitialParamCheck(char *argThreads, long int *nThreads, char *argmatrixOrd,
         fprintf(stderr, "O argumento \"%s\" é uma string\nExecute o Programa com um argumento válido", str);
         errorSign('g');
     }
-    else if (*nThreads <= 0)
+    else if ((*nThreads < 1)||(*nThreads == 3)||(*nThreads > 4))
     {
         errorSign('k');
     }
@@ -201,12 +201,14 @@ void FilesReaderAndWriter(int matrixOrd, long int *matrix_A, long int *matrix_B,
 void FilesReaderAndAssignment(int matrixOrd, long int *matrix_A, long int *matrix_B, char *fileDat_A, char *fileDat_B, unsigned int nThreads)
 {
     ThreadParameters *parameters;
+    
+
+    parameters = vectorParameterAlloc(2);
+
     int errDetector;
 
     if (nThreads == 1)
     {
-        parameters = vectorParameterAlloc(2);
-
         parameters[0].matrix_Ord = matrixOrd;
         parameters[0].matrix_1 = matrix_A;
         parameters[0].file_Dat = fileDat_A;
@@ -223,7 +225,6 @@ void FilesReaderAndAssignment(int matrixOrd, long int *matrix_A, long int *matri
     else
     {
         pthread_t *idsThread;
-        parameters = vectorParameterAlloc(2);
         idsThread = ThreadIDAlloc(2);
 
         parameters[0].matrix_Ord = matrixOrd;

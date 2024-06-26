@@ -14,7 +14,6 @@
 //  todos os seus componentes devem ser somados, resultando em um único valor final."
 //  Para tanto, o projeto propõe a realização de uma sequência de operações com matrizes de números inteiros, lidos a partir de
 //  arquivos de entradas, e posterior gravação dos resultados em arquivos de saída.
-#define _POSIX_C_SOURCE 199309L
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -29,26 +28,16 @@
 #define fileD (argv[6])
 #define fileE (argv[7])
 
-/**
- *Função Main - Parâmetros de entrada:
- * @param nThreadsArgv Número de threads T.
- * @param matrixOrdArgv Ordem da Matriz.
- * @param file Arquivos de texto.
- */
 int main(int argc, char *argv[])
 {
-    struct timespec timeStart = {0, 0};
-    struct timespec timeEnd = {0, 0};
     register double sumTime;
     register double multTime;
     register double reduceTime;
-    register double totalTime;
+    register double totalTime = 0;
     long int nThreads;
     long int matrixOrd;
 
     InitialParamCheck(nThreadsArgv, &nThreads, matrixOrdArgv, &matrixOrd, argc);
-
-    clock_gettime(CLOCK_MONOTONIC, &timeStart);
 
     long int *matrixA = MatrixAlloc(matrixOrd);
     long int *matrixB = MatrixAlloc(matrixOrd);
@@ -73,8 +62,8 @@ int main(int argc, char *argv[])
 
     free(matrixE);
 
-    clock_gettime(CLOCK_MONOTONIC, &timeEnd);
-    totalTime = timeCalc(timeStart, timeEnd);
+
+    totalTime = (sumTime+multTime+totalTime);
 
     printf("Tempo soma: %lf segundos.\n", sumTime);
     printf("Tempo multiplicação: %lf segundos.\n", multTime);
