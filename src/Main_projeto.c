@@ -76,10 +76,10 @@ int main(int argc, char *argv[])
     clock_gettime(CLOCK_MONOTONIC, &timeEnd);
     totalTime = timeCalc(timeStart, timeEnd);
 
-    printf("Tempo soma: %f segundos.\n", sumTime);
-    printf("Tempo multiplicação: %f segundos.\n", multTime);
-    printf("Tempo redução: %f segundos.\n", reduceTime);
-    printf("Tempo total: %f segundos.\n", totalTime);
+    printf("Tempo soma: %lf segundos.\n", sumTime);
+    printf("Tempo multiplicação: %lf segundos.\n", multTime);
+    printf("Tempo redução: %lf segundos.\n", reduceTime);
+    printf("Tempo total: %lf segundos.\n", totalTime);
 
     return 0;
 }
