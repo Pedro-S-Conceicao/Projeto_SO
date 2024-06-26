@@ -13,10 +13,10 @@ ORD1000 = 1000
 2THRD = 2
 4THRD = 4
 
-criarDir:
+dirCreate:
 	@mkdir build bin
 
-compilar:	$(BIN)programa
+compile:	$(BIN)programa
  
 $(BIN)programa: $(OBJS)
 	@$(CC) -o $@ $^
